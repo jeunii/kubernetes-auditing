@@ -1,8 +1,0 @@
-apiVersion: audit.k8s.io/v1
-kind: Policy
-rules:
-  # Log "pods/log", "pods/status" at Metadata level
-  - level: Metadata
-    resources:
-    - group: ""
-      resources: ["pods/log"]

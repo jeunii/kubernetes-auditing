@@ -110,19 +110,15 @@
   tags: [k8s]
 
 - list: trusted_k8s_containers
-  items: [sysdig/agent, sysdig/falco, quay.io/coreos/flannel, calico/node, rook/toolbox,
-    gcr.io/google_containers/hyperkube, gcr.io/google_containers/kube-proxy,
-    openshift3/ose-sti-builder,
-    registry.access.redhat.com/openshift3/logging-fluentd,
-    registry.access.redhat.com/openshift3/logging-elasticsearch,
-    registry.access.redhat.com/openshift3/metrics-cassandra,
-    registry.access.redhat.com/openshift3/ose-sti-builder,
-    registry.access.redhat.com/openshift3/ose-docker-builder,
-    registry.access.redhat.com/openshift3/image-inspector,
-    cloudnativelabs/kube-router, istio/proxy,
-    datadog/docker-dd-agent, datadog/agent,
-    docker/ucp-agent,
-    gliderlabs/logspout]
+  items: [istio/proxy]
+
+- rule: Create Disallowed Pod
+  desc: Detect an attempt to start a pod with a container image outside of a list of allowed images.
+  condition: kevt and pod and kcreate and not allowed_k8s_containers
+  output: Pod started with container not in allowed list (user=%ka.user.name pod=%ka.resp.name ns=%ka.target.namespace image=%ka.req.container.image)
+  priority: WARNING
+  source: k8s_audit
+  tags: [k8s]
 
 - rule: Create Privileged Pod
   desc: >
@@ -161,8 +157,7 @@
   tags: [k8s]
 
 - rule: Create NodePort Service
-  desc: >
-    Detect an attempt to start a service with a NodePort service type
+  desc: Detect an attempt to start a service with a NodePort service type
   condition: kevt and service and kcreate and ka.req.service.type=NodePort
   output: NodePort Service Created (user=%ka.user.name service=%ka.target.name ns=%ka.target.namespace ports=%ka.req.service.ports)
   priority: WARNING

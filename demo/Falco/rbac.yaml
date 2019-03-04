@@ -24,14 +24,13 @@ kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: falco-cluster-role-binding
-  namespace: default
   labels:
     app: falco-example
     role: security
 subjects:
   - kind: ServiceAccount
     name: falco-account
-    namespace: default
+    namespace: audit-demo
 roleRef:
   kind: ClusterRole
   name: falco-cluster-role
